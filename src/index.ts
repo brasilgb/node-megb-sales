@@ -14,7 +14,7 @@ const app = express();
  
 app.use(cors());
  
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3008;
 
 // Configure general rate limiter
 const generalLimiter = rateLimit({

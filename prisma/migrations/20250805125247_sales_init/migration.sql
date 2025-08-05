@@ -129,6 +129,7 @@ CREATE TABLE "public"."products" (
     "unity" TEXT,
     "measure" TEXT,
     "price" DECIMAL(65,30) NOT NULL,
+    "enabled" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -178,12 +179,6 @@ CREATE UNIQUE INDEX "customers_email_key" ON "public"."customers"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "products_reference_key" ON "public"."products"("reference");
-
--- AddForeignKey
-ALTER TABLE "public"."customers" ADD CONSTRAINT "customers_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."products" ADD CONSTRAINT "products_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."orders" ADD CONSTRAINT "orders_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

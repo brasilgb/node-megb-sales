@@ -21,6 +21,7 @@ export async function createCustomer(req: Request, res: Response) {
         contact_telephone,
         observations,
     } = req.body;
+    console.log(req.body);
     try {
         const existingCustomerByReference = await db.customer.findUnique({
             where: {

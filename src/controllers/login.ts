@@ -4,7 +4,6 @@ import bcrypt from "bcrypt";
 import { generateAccessToken } from "@/utils/generateJWT";
 import { addMinutes } from "date-fns";
 import { Resend } from 'resend';
-import { error } from "console";
 import { generateEmailHTML } from "@/utils/generateEmailTemplate";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
