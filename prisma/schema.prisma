@@ -1,0 +1,192 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model for superadmin
+model Plan {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  price       Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("plans")
+}
+
+// model for superadmin
+model Tenant {
+  id               Int      @id @default(autoincrement())
+  company_name     String
+  company_cnpj     String   @unique
+  fantasy_name     String
+  contact_name     String
+  contact_email    String   @unique
+  contact_phone    String
+  contact_whatsapp String
+  logo             String?
+  zip_code         String
+  state            String
+  city             String
+  district         String
+  street           String
+  number           String
+  complement       String?
+  plan_id          Int
+  status           String   @default("active")
+  observations     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("tenants")
+}
+
+enum TenantStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// Application users
+model User {
+  id        Int    @id @default(autoincrement())
+  name      String
+  email     String @unique
+  telephone String
+  whatsapp  String
+  password  String
+  role      String @default("user") // e.g., user, admin, superadmin
+  status    String @default("active") // e.g., active, inactive, suspended
+
+  resetToken       String?
+  resetTokenExpiry DateTime?
+  orders           Order[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  SUPERADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// model for superadmin
+model Company {
+  id          Int      @id @default(autoincrement())
+  tenant_id   Int
+  shortname   String
+  companyname String
+  cnpj        String   @unique
+  logo        String?
+  zip_code    String?
+  state       String?
+  city        String?
+  phone       String?
+  district    String?
+  street      String?
+  number      String?
+  complement  String?
+  telephone   String?
+  site        String?
+  email       String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("companies")
+}
+
+// model for application 
+model Customer {
+  id                Int       @id @default(autoincrement())
+  user_id           Int
+  name              String
+  cpf_cnpj          String?   @unique
+  birth_date        DateTime?
+  email             String?   @unique
+  zip_code          String?
+  state             String?
+  city              String?
+  district          String?
+  street            String?
+  complement        String?
+  number            String?
+  telephone         String?
+  contact_name      String?
+  whatsapp          String?
+  contact_telephone String?
+  observations      String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  orders Order[]
+
+  @@map("customers")
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model Product {
+  id          Int     @id @default(autoincrement())
+  user_id     Int
+  name        String
+  reference   String  @unique
+  description String?
+  unity       String?
+  measure     String?
+  price       Decimal
+  enabled     Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+
+  @@map("products")
+}
+
+model Order {
+  id          Int     @id @default(autoincrement())
+  user_id     Int
+  customer_id Int
+  product_id  Int
+  amount      Int
+  value       Decimal
+  total       Decimal
+  flex        Decimal
+  total_flex  Decimal
+
+  user     User     @relation(fields: [user_id], references: [id])
+  customer Customer @relation(fields: [customer_id], references: [id])
+  product  Product  @relation(fields: [product_id], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("orders")
+}
