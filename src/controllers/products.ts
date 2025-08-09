@@ -14,7 +14,6 @@ export async function createProduct(req: Request, res: Response) {
     } = req.body;
     try {
 
-        console.log(reference);
         const existingProductByReference = await db.product.findUnique({
             where: {
                 reference,
@@ -30,7 +29,7 @@ export async function createProduct(req: Request, res: Response) {
 
         const newProduct = await db.product.create({
             data: {
-                user_id,
+                user_id: 1,
                 name,
                 reference,
                 description,
@@ -46,6 +45,8 @@ export async function createProduct(req: Request, res: Response) {
             error: null
         });
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json({
             error: `Erro ao criar produto` + error,
             data: null
@@ -73,7 +74,7 @@ export async function getProducts(req: Request, res: Response) {
 
     } catch (error) {
         return res.status(500).json({
-            error: "Erro ao listar produto",
+            error: `Erro ao listar produtos`,
             data: null
         });
 

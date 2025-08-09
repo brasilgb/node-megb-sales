@@ -65,11 +65,11 @@ model User {
   id        Int    @id @default(autoincrement())
   name      String
   email     String @unique
-  telephone String
-  whatsapp  String
+  telephone String?
+  whatsapp  String?
   password  String
-  role      String @default("user") // e.g., user, admin, superadmin
-  status    String @default("active") // e.g., active, inactive, suspended
+  role      String? @default("user") // e.g., user, admin, superadmin
+  status    String? @default("active") // e.g., active, inactive, suspended
 
   resetToken       String?
   resetTokenExpiry DateTime?

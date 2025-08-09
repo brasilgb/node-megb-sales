@@ -8,4 +8,4 @@ loginRouter.put("/auth/forgot-password", forgotPassword);
 loginRouter.get("/auth/verify-token", verifyToken);
 loginRouter.get("/auth/change-password", changePassword);
 
-export default loginRouter; 
+export default loginRouter;

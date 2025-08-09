@@ -5,6 +5,8 @@ import bcrypt from "bcrypt";
 
 export async function createUser(req: Request, res: Response) {
     const { tenant_id, name, email, telephone, whatsapp, password, role, status } = req.body;
+    console.log(req.body);
+    
     try {
 
         const existingUserByEmail = await db.user.findUnique({
@@ -26,9 +28,9 @@ export async function createUser(req: Request, res: Response) {
             data: {
                 name,
                 email,
+                password: hashedPassword,
                 telephone,
                 whatsapp,
-                password: hashedPassword,
                 role,
                 status,
             },
@@ -43,7 +45,7 @@ export async function createUser(req: Request, res: Response) {
         });
     } catch (error) {
         return res.status(500).json({
-            error: `Erro ao criar usuário`,
+            error: `Erro ao criar usuário ${error}`,
             data: null
         });
     }

@@ -166,7 +166,7 @@ export async function updateCustomerBiId(req: Request, res: Response) {
                 id: Number(id),
             },
             data: {
-                user_id,
+                user_id: 1,
                 name,
                 cpf_cnpj,
                 birth_date,

@@ -10,6 +10,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function authorizeUser(req: Request, res: Response) {
     const { email, password } = req.body;
+    
     try {
 
         const existingUser = await db.user.findUnique({
@@ -158,7 +159,6 @@ export async function verifyToken(req: Request, res: Response) {
 export const changePassword = async (req: Request, res: Response) => {
   const { token } = req.query;
   const { newPassword } = req.body;
- console.log(token);
   try {
     const user = await db.user.findFirst({
       where: {
