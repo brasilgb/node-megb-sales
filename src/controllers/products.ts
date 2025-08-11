@@ -59,9 +59,6 @@ export async function getProducts(req: Request, res: Response) {
 
     try {
         const products = await db.product.findMany({
-            where: {
-                enabled: true,
-            },
             orderBy: {
                 createdAt: "desc"
             },
@@ -116,6 +113,7 @@ export async function getProductBiId(req: Request, res: Response) {
 export async function updateProductBiId(req: Request, res: Response) {
     const { id } = req.params;
     const { user_id, name, reference, description, unity, measure, price, enabled } = req.body;
+    
     try {
         const product = await db.product.findUnique({
             where: {
