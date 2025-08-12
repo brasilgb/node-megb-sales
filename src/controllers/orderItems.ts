@@ -1,28 +1,25 @@
 import { db } from "@/db/db";
 import { Request, Response } from "express";
 
-export async function createOrder(req: Request, res: Response) {
+export async function createOrderItems(req: Request, res: Response) {
     const {
         user_id,
-        customer_id,
-        total,
-        flex,
-        total_flex
+        order_id,
+        product_id,
+        quantity
     } = req.body;
     try {
         
-        const newOrder = await db.order.create({
+        const newOrderItems = await db.orderItems.create({
             data: {
-                user_id,
-                customer_id,
-                total,
-                flex,
-                total_flex
+                order_id,
+                product_id,
+                quantity
             },
         });
 
         return res.status(201).json({
-            data: newOrder,
+            data: newOrderItems,
             error: null
         });
     } catch (error) {
@@ -34,10 +31,10 @@ export async function createOrder(req: Request, res: Response) {
 
 }
 
-export async function getOrders(req: Request, res: Response) {
+export async function getOrderItemss(req: Request, res: Response) {
 
     try {
-        const orders = await db.order.findMany({
+        const orders = await db.orderItems.findMany({
             orderBy: {
                 createdAt: "desc"
             },
@@ -58,12 +55,12 @@ export async function getOrders(req: Request, res: Response) {
 
 }
 
-export async function getOrderBiId(req: Request, res: Response) {
+export async function getOrderItemsBiId(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
-        const order = await db.order.findUnique({
-            where: {
+        const order = await db.orderItems.findUnique({
+            where: { // Should be orderItems
                 id: Number(id),
             },
         });
@@ -89,44 +86,40 @@ export async function getOrderBiId(req: Request, res: Response) {
 
 }
 
-export async function updateOrderBiId(req: Request, res: Response) {
+export async function updateOrderItemsBiId(req: Request, res: Response) {
     const { id } = req.params;
     const {
-        user_id,
-        customer_id,
-        total,
-        flex,
-        total_flex
+        order_id,
+        product_id,
+        quantity
     } = req.body;
     try {
-        const order = await db.order.findUnique({
+        const orderItems = await db.orderItems.findUnique({
             where: {
                 id: Number(id),
             },
         });
 
-        if (!order) {
-            return res.status(404).json({
+        if (!orderItems) {
+            return res.status(404).json({ // Should be orderItems
                 data: null,
                 error: `Pedido com ID ${id} não encontrado`
             });
         }
 
-        const updatedOrder = await db.order.update({
+        const updatedOrderItems = await db.orderItems.update({
             where: {
-                id: Number(id),
+                id: Number(id), // Should be orderItems
             },
             data: {
-                user_id,
-                customer_id,
-                total,
-                flex,
-                total_flex
+                order_id,
+                product_id,
+                quantity
             }
         });
 
         return res.status(200).json({
-            data: updatedOrder,
+            data: updatedOrderItems,
             error: null
         });
 
@@ -139,18 +132,18 @@ export async function updateOrderBiId(req: Request, res: Response) {
 
 }
 
-export async function deleteOrderBiId(req: Request, res: Response) {
+export async function deleteOrderItemsBiId(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
-        const order = await db.order.findUnique({
+        const orderItems = await db.orderItems.findUnique({
             where: {
                 id: Number(id),
             },
         });
 
-        if (!order) {
-            return res.status(404).json({
+        if (!orderItems) {
+            return res.status(404).json({ // Should be orderItems
                 data: null,
                 error: `Pedido com ID ${id} não encontrado`
             });
@@ -158,7 +151,7 @@ export async function deleteOrderBiId(req: Request, res: Response) {
 
         await db.order.delete({
             where: {
-                id: Number(id),
+                id: Number(id), // Should be orderItems
             },
         });
 
