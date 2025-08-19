@@ -50,7 +50,6 @@ app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-
 app.use("/api/v1", userRouter);
 app.use("/api/v1", loginRouter);
 app.use("/api/v1", productRouter);

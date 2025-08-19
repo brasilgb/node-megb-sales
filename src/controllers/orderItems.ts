@@ -6,15 +6,19 @@ export async function createOrderItems(req: Request, res: Response) {
         user_id,
         order_id,
         product_id,
-        quantity
+        quantity,
+        price,
+        total
     } = req.body;
     try {
         
-        const newOrderItems = await db.orderItems.create({
+        const newOrderItems = await db.orderItem.create({
             data: {
                 order_id,
                 product_id,
-                quantity
+                quantity,
+                price,
+                total
             },
         });
 
@@ -34,7 +38,7 @@ export async function createOrderItems(req: Request, res: Response) {
 export async function getOrderItemss(req: Request, res: Response) {
 
     try {
-        const orders = await db.orderItems.findMany({
+        const orders = await db.orderItem.findMany({
             orderBy: {
                 createdAt: "desc"
             },
@@ -59,8 +63,8 @@ export async function getOrderItemsBiId(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
-        const order = await db.orderItems.findUnique({
-            where: { // Should be orderItems
+        const order = await db.orderItem.findUnique({
+            where: { // Should be orderItem
                 id: Number(id),
             },
         });
@@ -91,30 +95,34 @@ export async function updateOrderItemsBiId(req: Request, res: Response) {
     const {
         order_id,
         product_id,
-        quantity
+        quantity,
+        price,
+        total
     } = req.body;
     try {
-        const orderItems = await db.orderItems.findUnique({
+        const orderItem = await db.orderItem.findUnique({
             where: {
                 id: Number(id),
             },
         });
 
-        if (!orderItems) {
-            return res.status(404).json({ // Should be orderItems
+        if (!orderItem) {
+            return res.status(404).json({ // Should be orderItem
                 data: null,
                 error: `Pedido com ID ${id} não encontrado`
             });
         }
 
-        const updatedOrderItems = await db.orderItems.update({
+        const updatedOrderItems = await db.orderItem.update({
             where: {
-                id: Number(id), // Should be orderItems
+                id: Number(id), // Should be orderItem
             },
             data: {
                 order_id,
                 product_id,
-                quantity
+                quantity,
+                price,
+                total
             }
         });
 
@@ -136,14 +144,14 @@ export async function deleteOrderItemsBiId(req: Request, res: Response) {
     const { id } = req.params;
 
     try {
-        const orderItems = await db.orderItems.findUnique({
+        const orderItem = await db.orderItem.findUnique({
             where: {
                 id: Number(id),
             },
         });
 
-        if (!orderItems) {
-            return res.status(404).json({ // Should be orderItems
+        if (!orderItem) {
+            return res.status(404).json({ // Should be orderItem
                 data: null,
                 error: `Pedido com ID ${id} não encontrado`
             });
@@ -151,7 +159,7 @@ export async function deleteOrderItemsBiId(req: Request, res: Response) {
 
         await db.order.delete({
             where: {
-                id: Number(id), // Should be orderItems
+                id: Number(id), // Should be orderItem
             },
         });
 

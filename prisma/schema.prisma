@@ -68,12 +68,11 @@ model User {
   telephone String?
   whatsapp  String?
   password  String
-  role      String? @default("user") // e.g., user, admin, superadmin
-  status    String? @default("active") // e.g., active, inactive, suspended
+  role      String? @default("usuario") // e.g., user, admin, superadmin
+  status    String? @default("ativo") // e.g., active, inactive, suspended
 
   resetToken       String?
   resetTokenExpiry DateTime?
-  orders           Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -82,15 +81,15 @@ model User {
 }
 
 enum UserRole {
-  USER
-  ADMIN
-  SUPERADMIN
+  usuario
+  admin
+  superadmin
 }
 
 enum UserStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
+  ativo
+  in
+  suspenso
 }
 
 // model for superadmin
@@ -138,18 +137,17 @@ model Customer {
   whatsapp          String?
   contact_telephone String?
   observations      String?
+  status            String    @default("ativo")
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-
-  orders Order[]
 
   @@map("customers")
 }
 
 enum CustomerStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
+  ativo
+  inativo
+  suspenso
 }
 
 model Product {
@@ -165,7 +163,7 @@ model Product {
 
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
-  orderItems OrderItems[] // Relation to OrderItem
+  orderItem OrderItem[] // Relation to OrderItem
 
   @@map("products")
 }
@@ -177,10 +175,9 @@ model Order {
   total       Decimal
   flex        Decimal
   total_flex  Decimal
+  status      String  @default("pendente")
 
-  user       User         @relation(fields: [user_id], references: [id])
-  customer   Customer     @relation(fields: [customer_id], references: [id])
-  orderItems OrderItems[]
+  orderItem OrderItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -188,14 +185,26 @@ model Order {
   @@map("orders")
 }
 
-model OrderItems {
+enum OrderStatus {
+  pendente
+  processando
+  concluido
+  cancelado
+}
+
+model OrderItem {
   id         Int     @id @default(autoincrement())
-  order      Order   @relation(fields: [order_id], references: [id])
   order_id   Int
-  product    Product @relation(fields: [product_id], references: [id])
+  order      Order   @relation(fields: [order_id], references: [id])
   product_id Int
+  product    Product @relation(fields: [product_id], references: [id])
   quantity   Int
+  price      Decimal
+  total      Decimal
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([order_id, product_id])
+  @@map("order_items")
 }

@@ -1,5 +1,6 @@
 import { db } from "@/db/db";
 import { Request, Response } from "express";
+import { it } from "node:test";
 
 export async function createOrder(req: Request, res: Response) {
     const {
@@ -7,18 +8,37 @@ export async function createOrder(req: Request, res: Response) {
         customer_id,
         total,
         flex,
-        total_flex
+        total_flex,
+        items
     } = req.body;
+    console.log(req.body);
+
     try {
-        
+
         const newOrder = await db.order.create({
             data: {
-                user_id,
-                customer_id,
+                user_id: 3,
+                customer_id: 2,
                 total,
-                flex,
-                total_flex
+                flex: '0',
+                total_flex: '0',
+                orderItem: {
+                    create: items.map((item: any) => ({
+                        product_id: item.product_id,
+                        quantity: item.quantity,
+                        price: item.price,
+                        total: item.total,
+                        product: {
+                            connect: {
+                                id: item.product_id
+                            }
+                        }
+                    })),
+                },
             },
+            include: {
+                orderItem: true
+            }
         });
 
         return res.status(201).json({
@@ -26,6 +46,7 @@ export async function createOrder(req: Request, res: Response) {
             error: null
         });
     } catch (error) {
+        console.log(error);
         return res.status(500).json({
             error: `Erro ao criar pedido` + error,
             data: null
